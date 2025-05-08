@@ -2,83 +2,128 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fullscreen API Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Video Fullscreen API Example (iOS Focus)</title>
     <style>
         body {
-            font-family: sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
             padding: 20px;
             text-align: center;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        #videoContainer {
+            margin-bottom: 20px;
+            display: inline-block; /* To center the video and button better if body text-align is center */
         }
         #fullscreenElement {
-            padding: 40px;
-            background-color: lightblue;
-            border: 2px solid blue;
-            margin-bottom: 20px;
-            display: flex; /* For centering content inside */
-            flex-direction: column;
-            justify-content: center; /* Center content vertically */
-            align-items: center; /* Center content horizontally */
-            height: 200px; /* Give it some initial size */
+            /* Styles for the video element itself */
+            width: 100%; /* Make video responsive within its container */
+            max-width: 480px; /* Max width for typical video display */
+            height: auto; /* Maintain aspect ratio */
+            background-color: #000; /* Background for video area */
+            border: 2px solid #1a73e8; /* A subtle border */
+            display: block; /* Ensure it's a block for margin auto to work if container is wider */
+            margin: 0 auto 10px auto; /* Center video if container is wider, add space below */
         }
+        /* Class to add when video is in fullscreen mode (optional, for styling) */
         #fullscreenElement.fullscreen-active {
-            /* Optional: styles when the element is fullscreen */
-            background-color: darkblue;
-            color: white;
+            border: 2px solid limegreen; /* Example: change border when fullscreen */
         }
         button {
-            padding: 10px 20px;
+            padding: 12px 25px;
             font-size: 16px;
+            color: white;
+            background-color: #1a73e8; /* A nice blue */
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
             margin-top: 10px;
+        }
+        button:hover, button:focus {
+            background-color: #1558b0; /* Darker blue on hover/focus */
+        }
+        .instructions {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #555;
         }
     </style>
 </head>
 <body>
 
-    <div id="fullscreenElement">
-        <h2>Content Area</h2>
-        <p>This is the element that will go fullscreen.</p>
-        <button id="enterFullscreenButton">Make This Area Fullscreen</button>
+    <h1>Video Fullscreen Test</h1>
+
+    <div id="videoContainer">
+        <video id="fullscreenElement"
+               src="your-video.mp4"  controls
+               playsinline>
+            Your browser does not support the video tag or the video format.
+        </video>
+        <button id="enterFullscreenButton">Make Video Fullscreen</button>
     </div>
 
-    <p>The button above will make the blue content area above go into fullscreen mode, which will typically hide the browser's address bar.</p>
+    <p class="instructions">
+        Click the button above to attempt to make the video go into fullscreen mode.
+        This uses the Fullscreen API, which should hide the browser's address bar.
+        The `playsinline` attribute is important for video behavior on iOS.
+    </p>
 
     <script>
-        const fullscreenElement = document.getElementById('fullscreenElement');
+        const videoElement = document.getElementById('fullscreenElement');
         const enterFullscreenButton = document.getElementById('enterFullscreenButton');
 
-        enterFullscreenButton.addEventListener('click', function() {
-            if (fullscreenElement.requestFullscreen) {
-                fullscreenElement.requestFullscreen();
-            } else if (fullscreenElement.webkitRequestFullscreen) { /* Safari */
-                fullscreenElement.webkitRequestFullscreen();
-            } else if (fullscreenElement.msRequestFullscreen) { /* IE11 */
-                fullscreenElement.msRequestFullscreen();
-            }
-        });
+        if (!videoElement || !enterFullscreenButton) {
+            console.error("Required elements (video or button) not found!");
+        } else {
+            enterFullscreenButton.addEventListener('click', function() {
+                // Check if video is ready to play, can help in some cases, though not strictly for fullscreen
+                if (videoElement.readyState >= 1) { // HAVE_METADATA or more
+                    console.log("Attempting to make video fullscreen...");
+                    if (videoElement.requestFullscreen) {
+                        videoElement.requestFullscreen().catch(err => {
+                            console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                        });
+                    } else if (videoElement.webkitRequestFullscreen) { // Safari
+                        videoElement.webkitRequestFullscreen().catch(err => {
+                            console.error(`Error attempting to enable webkit full-screen mode: ${err.message} (${err.name})`);
+                        });
+                    } else if (videoElement.msRequestFullscreen) { // IE11
+                        videoElement.msRequestFullscreen().catch(err => {
+                            console.error(`Error attempting to enable ms full-screen mode: ${err.message} (${err.name})`);
+                        });
+                    } else {
+                        alert("Fullscreen API is not supported by this browser.");
+                    }
+                } else {
+                    console.warn("Video metadata not loaded yet. Try again shortly or ensure src is valid.");
+                    // Optionally, try to load the video if it's not loaded
+                    // videoElement.load();
+                    // alert("Video is not ready. Please ensure the video source is correct and try again.");
+                }
+            });
+        }
 
-        // Optional: Listen for fullscreen changes to add/remove a class
-        document.addEventListener('fullscreenchange', () => {
-            if (document.fullscreenElement) {
-                fullscreenElement.classList.add('fullscreen-active');
-                console.log('Entered fullscreen mode for the element.');
+        // Optional: Listen for fullscreen changes to add/remove a class or perform actions
+        function handleFullscreenChange() {
+            const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
+            if (isFullscreen) {
+                videoElement.classList.add('fullscreen-active');
+                console.log('Entered fullscreen mode for the video element.');
             } else {
-                fullscreenElement.classList.remove('fullscreen-active');
+                videoElement.classList.remove('fullscreen-active');
                 console.log('Exited fullscreen mode.');
+                // Optional: Pause video when exiting fullscreen
+                // if (!videoElement.paused) {
+                //     videoElement.pause();
+                // }
             }
-        });
+        }
 
-        // Safari uses webkitfullscreenchange
-        document.addEventListener('webkitfullscreenchange', () => {
-            if (document.webkitFullscreenElement) {
-                fullscreenElement.classList.add('fullscreen-active');
-                console.log('Entered fullscreen mode (webkit) for the element.');
-            } else {
-                fullscreenElement.classList.remove('fullscreen-active');
-                console.log('Exited fullscreen mode (webkit).');
-            }
-        });
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange); // For Safari
+        document.addEventListener('msfullscreenchange', handleFullscreenChange); // For IE11
     </script>
 
 </body>
