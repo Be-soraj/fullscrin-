@@ -2,87 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Scroll Button - More Scroll</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attempt to Hide Address Bar</title>
     <style>
         body {
             font-family: sans-serif;
-            margin: 0;
-            background-color: #f0f0f0;
-            text-align: center;
-            padding-bottom: 50px; /* Add some padding at the bottom */
-        }
-        .content {
+            /* Make sure there's enough content to scroll */
+            min-height: 150vh; /* 1.5 times the viewport height */
             padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 600px;
-            margin: 20px auto;
+            text-align: center;
         }
-        .spacer {
-            height: 150vh; /* Ensures page is scrollable */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #555;
-            background-color: #e9e9e9;
-            margin-top: 20px;
-            border-radius: 4px;
-        }
-        .instruction {
-            padding: 15px;
-            background-color: #d1ecf1;
-            border: 1px solid #bee5eb;
-            color: #0c5460;
-            border-radius: 4px;
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
             margin-bottom: 20px;
         }
-        button#scrollBtn {
-            padding: 12px 25px; /* Slightly larger button */
-            font-size: 16px;
-            color: white;
-            background-color: #007bff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-        button#scrollBtn:hover {
-            background-color: #0056b3;
+        .content {
+            margin-top: 30px;
+            border: 1px solid #ccc;
+            padding: 20px;
+            background-color: #f9f9f9;
         }
     </style>
 </head>
 <body>
 
-    <div class="content">
-        <div class="instruction">
-            Click the button below to scroll the page down by a noticeable amount.
-            This might help hide Safari's address bar and bottom toolbar.
-        </div>
-        <h1>Manual Scroll Trick Demo</h1>
-        <p>Content is intentionally made long to enable scrolling.</p>
-        <button id="scrollBtn">Scroll More</button>
-        <p style="margin-top: 20px;">If the bars are still visible after clicking, try scrolling down manually a bit further.</p>
-    </div>
+    <button id="hideAddressBarButton">Attempt to Hide Address Bar (Old Trick)</button>
 
-    <div class="spacer">
-        <p>This is extra space to make the page scrollable.</p>
+    <p>Scroll down this page manually to see the browser's native behavior for hiding the address bar.</p>
+    <p>Clicking the button above will try an old JavaScript trick. Its success is highly unlikely on modern mobile browsers.</p>
+
+    <div class="content">
+        <p>Some page content here to make the page scrollable.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <p>More content...</p>
+        <p>Even more content...</p>
     </div>
 
     <script>
-        const scrollButton = document.getElementById('scrollBtn');
-        const scrollAmount = 150; // Pixels to scroll by. You can adjust this value.
-
-        scrollButton.addEventListener('click', () => {
-            window.scrollBy(0, scrollAmount);
-            console.log(`Button clicked: Attempted to scroll down by ${scrollAmount} pixels.`);
-        });
-
-        // Optional: Log current scroll position for debugging
-        window.addEventListener('scroll', () => {
-            console.log(`Current scrollY: ${window.scrollY}`);
+        document.getElementById('hideAddressBarButton').addEventListener('click', function() {
+            // This is the old trick. It's often ineffective on modern mobile browsers.
+            window.scrollTo(0, 1);
+            console.log('Attempted to scroll to hide address bar.');
+            // You might add an alert or console message to confirm the button click if testing
+            // alert('Button clicked, attempted to scroll.');
         });
     </script>
 
