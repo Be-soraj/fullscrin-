@@ -1,17 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Scroll Demo for UI Hiding</title>
+    <title>Fullscreen Demo</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> <meta name="apple-mobile-web-app-title" content="My App"> <link rel="apple-touch-icon" href="path/to/your/apple-touch-icon.png">
     <style>
+        /* Your existing styles */
         body {
             font-family: sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* No need for justify-content: center if you want natural scrolling from the top */
-            min-height: 100vh; /* Ensures body at least fills the screen */
+            min-height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
             text-align: center;
@@ -21,100 +22,47 @@
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 600px; /* Optional: constrain width on larger screens */
-            margin-top: 20px; /* Give some space at the top */
         }
-        .spacer {
-            /* This is just to make the page very long for demonstration */
-            height: 150vh; /* Increase this if needed to ensure scrolling */
-            background-color: #e0e0e0;
-            margin-top: 20px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #555;
-        }
-        button {
-            padding: 12px 25px;
-            font-size: 16px;
-            color: white;
-            background-color: #007bff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
-            margin-bottom: 20px; /* Add some margin at the bottom */
-        }
-        button:hover {
-            background-color: #0056b3;
+        button { /* Your button styles */ }
+        button:hover { /* Your button hover styles */ }
+
+        /* Specific styles for when running as a standalone app (PWA) */
+        @media all and (display-mode: standalone) {
+            /* You can add styles here that only apply when launched from home screen */
+            /* For example, to ensure it truly fills the screen: */
+            html, body {
+                height: 100%;
+                overflow: auto; /* Or hidden, depending on your needs */
+            }
         }
     </style>
 </head>
 <body>
-
     <div class="content">
-        <h1>Safari UI Hiding Demo</h1>
-        <p>This page is intentionally made long. Scroll down to see if Safari's address bar and bottom toolbar minimize.</p>
-        <p>The Fullscreen API button below will attempt to make the HTML element fullscreen, but on iPhone, it likely won't hide the browser's own UI bars.</p>
-        <button id="fullscreenBtn">Attempt Fullscreen API</button>
-    </div>
-
-    <div class="spacer">
-        <p>Scroll further down...</p>
+        <h1>Fullscreen API Demo</h1>
+        <p>If added to Home Screen, this should open without browser bars.</p>
+        <p>Click the button below to try and enter fullscreen mode (via API).</p>
+        <button id="fullscreenBtn">Enter Fullscreen</button>
     </div>
 
     <script>
+        // Your existing JavaScript for the button can remain
+        // It won't be necessary for the PWA chromeless view,
+        // but it doesn't hurt to keep if you want to use the API for specific elements.
+
         const fullscreenButton = document.getElementById('fullscreenBtn');
-        const htmlElement = document.documentElement; // The <html> element
+        const htmlElement = document.documentElement;
 
-        fullscreenButton.addEventListener('click', () => {
-            // Standard Fullscreen API
-            if (htmlElement.requestFullscreen) {
-                htmlElement.requestFullscreen()
-                    .then(() => console.log('Standard fullscreen requested.'))
-                    .catch(err => console.error(`Error attempting standard fullscreen: ${err.message} (${err.name})`));
-            }
-            // Safari (webkit prefix)
-            else if (htmlElement.webkitRequestFullscreen) {
-                htmlElement.webkitRequestFullscreen(); // Note: Safari might not return a Promise here
-                console.log('Webkit fullscreen requested.');
-            }
-            // IE/Edge (ms prefix)
-            else if (htmlElement.msRequestFullscreen) {
-                htmlElement.msRequestFullscreen();
-                console.log('MS fullscreen requested.');
-            } else {
-                console.log('Fullscreen API is not supported by this browser.');
-            }
-        });
+        fullscreenButton.addEventListener('click', () => { /* ... your existing fullscreen JS ... */ });
+        document.addEventListener('fullscreenchange', () => { /* ... */ });
+        document.addEventListener('webkitfullscreenchange', () => { /* ... */ });
 
-        // Log fullscreen changes
-        document.addEventListener('fullscreenchange', () => {
-            if (document.fullscreenElement) {
-                console.log('Entered fullscreen mode (standard event).');
-            } else {
-                console.log('Exited fullscreen mode (standard event).');
-            }
-        });
-
-        document.addEventListener('webkitfullscreenchange', () => { // For Safari
-            if (document.webkitFullscreenElement) {
-                console.log('Entered fullscreen mode (webkit event).');
-            } else {
-                console.log('Exited fullscreen mode (webkit event).');
-            }
-        });
-
-        // You could also try this, but it's often unreliable for hiding UI bars
-        // window.addEventListener('load', () => {
-        //   setTimeout(() => {
-        //     window.scrollTo(0, 1);
-        //     console.log('Attempted to scroll to (0,1) to hide UI bars.');
-        //   }, 100); // Small delay to ensure layout is complete
-        // });
+        // Check if running as a PWA (launched from Home Screen)
+        if (window.navigator.standalone) {
+            console.log('Displayed in standalone mode (PWA).');
+            // You could hide the "Enter Fullscreen" button if it's redundant in PWA mode
+            // if (fullscreenButton) fullscreenButton.style.display = 'none';
+        }
     </script>
-
 </body>
 </html>
