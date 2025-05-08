@@ -1,68 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Fullscreen Demo</title>
-
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> <meta name="apple-mobile-web-app-title" content="My App"> <link rel="apple-touch-icon" href="path/to/your/apple-touch-icon.png">
+    <title>Auto Scroll to Hide Bars</title>
     <style>
-        /* Your existing styles */
         body {
             font-family: sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
             text-align: center;
+            /* Ensure body can be taller than the viewport if content pushes it */
         }
         .content {
             padding: 20px;
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 600px;
+            margin: 20px auto; /* Auto margins for horizontal centering */
         }
-        button { /* Your button styles */ }
-        button:hover { /* Your button hover styles */ }
-
-        /* Specific styles for when running as a standalone app (PWA) */
-        @media all and (display-mode: standalone) {
-            /* You can add styles here that only apply when launched from home screen */
-            /* For example, to ensure it truly fills the screen: */
-            html, body {
-                height: 100%;
-                overflow: auto; /* Or hidden, depending on your needs */
-            }
+        .spacer {
+            /* This is crucial: makes the page taller than the screen */
+            height: 150vh; /* Adjust as needed to ensure scrollability */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            background-color: #e9e9e9; /* Just to make it visible */
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+        .instruction {
+            padding: 15px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            border-radius: 4px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
+
     <div class="content">
-        <h1>Fullscreen API Demo</h1>
-        <p>If added to Home Screen, this should open without browser bars.</p>
-        <p>Click the button below to try and enter fullscreen mode (via API).</p>
-        <button id="fullscreenBtn">Enter Fullscreen</button>
+        <div class="instruction">
+            This page will attempt to scroll automatically by a tiny amount on load.
+            If successful and the page is long enough, Safari's address bar and bottom toolbar might hide.
+        </div>
+        <h1>Scroll Trick Demo</h1>
+        <p>Content is intentionally made long to enable scrolling.</p>
+        <p>If the bars are still visible, try scrolling down manually a bit.</p>
+        <p>The effectiveness of this automatic trick can vary.</p>
+    </div>
+
+    <div class="spacer">
+        <p>This is extra space to make the page scrollable.</p>
     </div>
 
     <script>
-        // Your existing JavaScript for the button can remain
-        // It won't be necessary for the PWA chromeless view,
-        // but it doesn't hurt to keep if you want to use the API for specific elements.
+        window.addEventListener('load', () => {
+            // A small delay can sometimes help ensure the layout is stable
+            setTimeout(() => {
+                // Scroll down by 1 pixel
+                window.scrollTo(0, 1);
+                console.log('Attempted to scroll to (0,1) to hide UI bars.');
 
-        const fullscreenButton = document.getElementById('fullscreenBtn');
-        const htmlElement = document.documentElement;
+                // You might need to test if scrolling back to 0 is better after the initial 1px scroll,
+                // but often just the 1px down is what's attempted.
+                // setTimeout(() => { window.scrollTo(0, 0); }, 50);
 
-        fullscreenButton.addEventListener('click', () => { /* ... your existing fullscreen JS ... */ });
-        document.addEventListener('fullscreenchange', () => { /* ... */ });
-        document.addEventListener('webkitfullscreenchange', () => { /* ... */ });
+            }, 100); // 100ms delay, can be adjusted
+        });
 
-        // Check if running as a PWA (launched from Home Screen)
-        if (window.navigator.standalone) {
-            console.log('Displayed in standalone mode (PWA).');
-            // You could hide the "Enter Fullscreen" button if it's redundant in PWA mode
-            // if (fullscreenButton) fullscreenButton.style.display = 'none';
-        }
+        // Optional: Log if the user scrolls, to see if manual scroll hides it
+        let userScrolled = false;
+        window.addEventListener('scroll', () => {
+            if (!userScrolled) {
+                console.log('User initiated scroll.');
+                userScrolled = true;
+            }
+        }, { once: true }); // Only log the first user scroll
     </script>
+
 </body>
 </html>
