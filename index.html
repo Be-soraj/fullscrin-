@@ -3,51 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attempt to Hide Address Bar</title>
+    <title>Fullscreen API Example</title>
     <style>
         body {
             font-family: sans-serif;
-            /* Make sure there's enough content to scroll */
-            min-height: 150vh; /* 1.5 times the viewport height */
             padding: 20px;
             text-align: center;
+        }
+        #fullscreenElement {
+            padding: 40px;
+            background-color: lightblue;
+            border: 2px solid blue;
+            margin-bottom: 20px;
+            display: flex; /* For centering content inside */
+            flex-direction: column;
+            justify-content: center; /* Center content vertically */
+            align-items: center; /* Center content horizontally */
+            height: 200px; /* Give it some initial size */
+        }
+        #fullscreenElement.fullscreen-active {
+            /* Optional: styles when the element is fullscreen */
+            background-color: darkblue;
+            color: white;
         }
         button {
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
-            margin-bottom: 20px;
-        }
-        .content {
-            margin-top: 30px;
-            border: 1px solid #ccc;
-            padding: 20px;
-            background-color: #f9f9f9;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
 
-    <button id="hideAddressBarButton">Attempt to Hide Address Bar (Old Trick)</button>
-
-    <p>Scroll down this page manually to see the browser's native behavior for hiding the address bar.</p>
-    <p>Clicking the button above will try an old JavaScript trick. Its success is highly unlikely on modern mobile browsers.</p>
-
-    <div class="content">
-        <p>Some page content here to make the page scrollable.</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-        <p>More content...</p>
-        <p>Even more content...</p>
+    <div id="fullscreenElement">
+        <h2>Content Area</h2>
+        <p>This is the element that will go fullscreen.</p>
+        <button id="enterFullscreenButton">Make This Area Fullscreen</button>
     </div>
 
+    <p>The button above will make the blue content area above go into fullscreen mode, which will typically hide the browser's address bar.</p>
+
     <script>
-        document.getElementById('hideAddressBarButton').addEventListener('click', function() {
-            // This is the old trick. It's often ineffective on modern mobile browsers.
-            window.scrollTo(0, 1);
-            console.log('Attempted to scroll to hide address bar.');
-            // You might add an alert or console message to confirm the button click if testing
-            // alert('Button clicked, attempted to scroll.');
+        const fullscreenElement = document.getElementById('fullscreenElement');
+        const enterFullscreenButton = document.getElementById('enterFullscreenButton');
+
+        enterFullscreenButton.addEventListener('click', function() {
+            if (fullscreenElement.requestFullscreen) {
+                fullscreenElement.requestFullscreen();
+            } else if (fullscreenElement.webkitRequestFullscreen) { /* Safari */
+                fullscreenElement.webkitRequestFullscreen();
+            } else if (fullscreenElement.msRequestFullscreen) { /* IE11 */
+                fullscreenElement.msRequestFullscreen();
+            }
+        });
+
+        // Optional: Listen for fullscreen changes to add/remove a class
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                fullscreenElement.classList.add('fullscreen-active');
+                console.log('Entered fullscreen mode for the element.');
+            } else {
+                fullscreenElement.classList.remove('fullscreen-active');
+                console.log('Exited fullscreen mode.');
+            }
+        });
+
+        // Safari uses webkitfullscreenchange
+        document.addEventListener('webkitfullscreenchange', () => {
+            if (document.webkitFullscreenElement) {
+                fullscreenElement.classList.add('fullscreen-active');
+                console.log('Entered fullscreen mode (webkit) for the element.');
+            } else {
+                fullscreenElement.classList.remove('fullscreen-active');
+                console.log('Exited fullscreen mode (webkit).');
+            }
         });
     </script>
 
