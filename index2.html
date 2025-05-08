@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fullscreen Demo</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+        .content {
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 12px 25px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="content">
+        <h1>Fullscreen API Demo</h1>
+        <p>Click the button below to try and enter fullscreen mode.</p>
+        <p>On a phone (like an iPhone), this should hide the browser's address bar and bottom toolbar.</p>
+        <button id="fullscreenBtn">Enter Fullscreen</button>
+    </div>
+
+    <script>
+        const fullscreenButton = document.getElementById('fullscreenBtn');
+        const htmlElement = document.documentElement; // The <html> element
+
+        fullscreenButton.addEventListener('click', () => {
+            // Check for standard fullscreen API
+            if (htmlElement.requestFullscreen) {
+                htmlElement.requestFullscreen();
+            } 
+            // Check for Safari (webkit prefix)
+            else if (htmlElement.webkitRequestFullscreen) { 
+                htmlElement.webkitRequestFullscreen();
+            } 
+            // Check for IE/Edge (ms prefix) - less relevant for "phone" but good for completeness
+            else if (htmlElement.msRequestFullscreen) { 
+                htmlElement.msRequestFullscreen();
+            }
+        });
+
+        // Optional: Log when fullscreen mode changes
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement || document.webkitFullscreenElement) {
+                console.log('Entered fullscreen mode');
+            } else {
+                console.log('Exited fullscreen mode');
+            }
+        });
+         document.addEventListener('webkitfullscreenchange', () => { // For Safari
+            if (document.fullscreenElement || document.webkitFullscreenElement) {
+                console.log('Entered fullscreen mode (webkit)');
+            } else {
+                console.log('Exited fullscreen mode (webkit)');
+            }
+        });
+    </script>
+
+</body>
+</html>
