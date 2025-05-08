@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Scroll Button to Hide Bars</title>
+    <title>Scroll Button - More Scroll</title>
     <style>
         body {
             font-family: sans-serif;
             margin: 0;
             background-color: #f0f0f0;
             text-align: center;
+            padding-bottom: 50px; /* Add some padding at the bottom */
         }
         .content {
             padding: 20px;
@@ -39,7 +40,7 @@
             margin-bottom: 20px;
         }
         button#scrollBtn {
-            padding: 10px 20px;
+            padding: 12px 25px; /* Slightly larger button */
             font-size: 16px;
             color: white;
             background-color: #007bff;
@@ -57,12 +58,12 @@
 
     <div class="content">
         <div class="instruction">
-            Click the button below to scroll the page slightly.
-            This might help hide Safari's address bar and bottom toolbar if the page is scrollable.
+            Click the button below to scroll the page down by a noticeable amount.
+            This might help hide Safari's address bar and bottom toolbar.
         </div>
         <h1>Manual Scroll Trick Demo</h1>
         <p>Content is intentionally made long to enable scrolling.</p>
-        <button id="scrollBtn">Scroll a Little</button>
+        <button id="scrollBtn">Scroll More</button>
         <p style="margin-top: 20px;">If the bars are still visible after clicking, try scrolling down manually a bit further.</p>
     </div>
 
@@ -72,34 +73,16 @@
 
     <script>
         const scrollButton = document.getElementById('scrollBtn');
+        const scrollAmount = 150; // Pixels to scroll by. You can adjust this value.
 
         scrollButton.addEventListener('click', () => {
-            // Scroll down by 1 pixel from the current scroll position or from top
-            // Scrolling to (0,1) from the top is usually what's attempted.
-            window.scrollTo(0, 5);
-            console.log('Button clicked: Attempted to scroll to (0,1) to hide UI bars.');
-
-            // Alternatively, scroll by a small amount from the current position:
-            // window.scrollBy(0, 1);
-            // console.log('Button clicked: Attempted to scroll down by 1 pixel from current position.');
-
-            // You might want to slightly delay scrolling back to the original position
-            // if the goal is to just trigger the UI change without noticeable content shift.
-            // However, this can be finicky.
-            // setTimeout(() => {
-            //    window.scrollTo(0, 0); // Or back to original scrollY if you saved it
-            // }, 50);
+            window.scrollBy(0, scrollAmount);
+            console.log(`Button clicked: Attempted to scroll down by ${scrollAmount} pixels.`);
         });
 
-        // Optional: Log if the user scrolls manually, to observe behavior
-        let userScrolledManually = false;
+        // Optional: Log current scroll position for debugging
         window.addEventListener('scroll', () => {
-            // This will fire for programmatic scrolls too.
-            // To detect only manual scroll after button click might need more complex logic.
-            if (!userScrolledManually) {
-                console.log('Page scrolled.');
-                userScrolledManually = true;
-            }
+            console.log(`Current scrollY: ${window.scrollY}`);
         });
     </script>
 
